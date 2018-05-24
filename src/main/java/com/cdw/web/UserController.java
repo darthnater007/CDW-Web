@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cdw.business.user.Login;
 import com.cdw.business.user.User;
 import com.cdw.business.user.UserRepository;
 import com.cdw.util.CDWMaintenanceReturn;
@@ -83,10 +84,10 @@ public class UserController extends BaseController{
 		
 	}
 	
-	@GetMapping(path = "/Authenticate")
-	public @ResponseBody List<User> authenticate(@RequestParam String uname, @RequestParam String pwd) {
+	@PostMapping(path = "/Authenticate")
+	public @ResponseBody List<User> authenticate(@RequestBody Login login) {
 		User user = new User();
-		user = userRepository.findByUserNameAndPassword(uname, pwd);
+		user = userRepository.findByUserNameAndPassword(login.getUserName(), login.getPassword());
 		return BaseController.getReturnArray(user);
 	}
 	//this is unnacceptable as a get method.  maybe take requestparams and try as requestbodies?  If that doesn't work I'm not sure what to do
