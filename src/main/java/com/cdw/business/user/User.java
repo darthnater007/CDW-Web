@@ -16,6 +16,7 @@ public class User {
 	private String firstName;
 	private String lastName;
 	private String bio;
+	private String website;
 	private String email;
 	private String phone;
 	@Column (name = "IsAdmin")
@@ -29,7 +30,7 @@ public class User {
 
 
 
-	public User(String userName, String password, String firstName, String lastName, String bio, String email,
+	public User(String userName, String password, String firstName, String lastName, String bio, String website, String email,
 			String phone, boolean admin) {
 		super();
 		this.userName = userName;
@@ -37,6 +38,7 @@ public class User {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.bio = bio;
+		this.website = website;
 		this.email = email;
 		this.phone = phone;
 		this.admin = admin;
@@ -44,7 +46,7 @@ public class User {
 
 
 
-	public User(int id, String userName, String password, String firstName, String lastName, String bio, String email,
+	public User(int id, String userName, String password, String firstName, String lastName, String bio, String website, String email,
 			String phone, boolean admin) {
 		super();
 		this.id = id;
@@ -53,6 +55,7 @@ public class User {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.bio = bio;
+		this.website = website;
 		this.email = email;
 		this.phone = phone;
 		this.admin = admin;
@@ -137,6 +140,17 @@ public class User {
 
 	public void setBio(String bio) {
 		this.bio = bio;
+	}
+
+	
+	public String getWebsite() {
+		return website;
+	}
+
+
+
+	public void setWebsite(String website) {
+		this.website = website;
 	}
 
 
