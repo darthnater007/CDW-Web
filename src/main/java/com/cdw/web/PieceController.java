@@ -1,5 +1,6 @@
 package com.cdw.web;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +48,8 @@ public class PieceController extends BaseController{
 	@PostMapping(path="/Add") 
 	public @ResponseBody CDWMaintenanceReturn addNewPiece (@RequestBody Piece piece) {
 		try {
+			Timestamp ts = new Timestamp(System.currentTimeMillis());
+			piece.setSubmitted(ts);
 			pieceRepository.save(piece);
 			return CDWMaintenanceReturn.getMaintReturn(piece);
 		}
