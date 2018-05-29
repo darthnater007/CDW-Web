@@ -90,6 +90,6 @@ public class UserController extends BaseController{
 		user = userRepository.findByUserNameAndPassword(login.getUserName(), login.getPassword());
 		return BaseController.getReturnArray(user);
 	}
-	//this is unnacceptable as a get method.  maybe take requestparams and try as requestbodies?  If that doesn't work I'm not sure what to do
+	
 	
 }

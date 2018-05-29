@@ -24,6 +24,7 @@ public class Piece {
 	private User user;
 	private String title;
 	private String genre;
+	private String description;
 	private String fileName;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
 	private Timestamp submitted;
@@ -34,11 +35,12 @@ public class Piece {
 		
 	}
 
-	public Piece(User user, String title, String genre, String fileName, Timestamp submitted, boolean publication) {
+	public Piece(User user, String title, String genre, String description, String fileName, Timestamp submitted, boolean publication) {
 		super();
 		this.user = user;
 		this.title = title;
 		this.genre = genre;
+		this.description = description;
 		this.fileName = fileName;
 		this.submitted = submitted;
 		this.publication = publication;
@@ -92,6 +94,14 @@ public class Piece {
 
 	public void setGenre(String genre) {
 		this.genre = genre;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getFileName() {
