@@ -1,7 +1,6 @@
 package com.cdw.web;
 
-import java.util.Date;
-import java.util.Calendar;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,13 +25,12 @@ public class EventController extends BaseController{
 	@Autowired 
 	private EventRepository eventRepository;
 	
-	//untested: no errors present I'm not sure if the java.sql date and java.util Date will be compatible??  Will test from front end
 	@GetMapping(path="/Clean")
 	public void cleanEvents() {
 		Iterable<Event> events = eventRepository.findAll();
-		Date today = Calendar.getInstance().getTime();
+		Timestamp today = new Timestamp(System.currentTimeMillis());
 		for (Event event : events) {
-			if(event.getEventDate().before(today)) {
+			if(event.getEventEnd().before(today)) {
 				eventRepository.deleteById(event.getId());
 			}
 		}

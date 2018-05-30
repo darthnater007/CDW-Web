@@ -1,12 +1,14 @@
 package com.cdw.business.event;
 
 import java.sql.Date;
-import java.sql.Time;
+import java.sql.Timestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class Event {
@@ -17,35 +19,34 @@ public class Event {
 	private String description;
 	private String eventName;
 	private String location;
-	private Date eventDate;
-	private Time eventStart;
-	private Time eventEnd;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy'T'HH:mm:ss.SSS")
+	private Timestamp eventStart;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy'T'HH:mm:ss.SSS")
+	private Timestamp eventEnd;
 	
 	public Event() {
 		
 	}
 
 	public Event(String hostedBy, String description, String eventName, String location, Date eventDate,
-			Time eventStart, Time eventEnd) {
+			Timestamp eventStart, Timestamp eventEnd) {
 		super();
 		this.hostedBy = hostedBy;
 		this.description = description;
 		this.eventName = eventName;
 		this.location = location;
-		this.eventDate = eventDate;
 		this.eventStart = eventStart;
 		this.eventEnd = eventEnd;
 	}
 
 	public Event(int id, String hostedBy, String description, String eventName, String location, Date eventDate,
-			Time eventStart, Time eventEnd) {
+			Timestamp eventStart, Timestamp eventEnd) {
 		super();
 		this.id = id;
 		this.hostedBy = hostedBy;
 		this.description = description;
 		this.eventName = eventName;
 		this.location = location;
-		this.eventDate = eventDate;
 		this.eventStart = eventStart;
 		this.eventEnd = eventEnd;
 	}
@@ -53,7 +54,7 @@ public class Event {
 	@Override
 	public String toString() {
 		return "Event [id=" + id + ", hostedBy=" + hostedBy + ", description=" + description + ", eventName="
-				+ eventName + ", location=" + location + ", eventDate=" + eventDate + ", eventStart=" + eventStart
+				+ eventName + ", location=" + location + ", eventStart=" + eventStart
 				+ ", eventEnd=" + eventEnd + "]";
 	}
 
@@ -97,27 +98,19 @@ public class Event {
 		this.location = location;
 	}
 
-	public Date getEventDate() {
-		return eventDate;
-	}
-
-	public void setEventDate(Date eventDate) {
-		this.eventDate = eventDate;
-	}
-
-	public Time getEventStart() {
+	public Timestamp getEventStart() {
 		return eventStart;
 	}
 
-	public void setEventStart(Time eventStart) {
+	public void setEventStart(Timestamp eventStart) {
 		this.eventStart = eventStart;
 	}
 
-	public Time getEventEnd() {
+	public Timestamp getEventEnd() {
 		return eventEnd;
 	}
 
-	public void setEventEnd(Time eventEnd) {
+	public void setEventEnd(Timestamp eventEnd) {
 		this.eventEnd = eventEnd;
 	}
 	
