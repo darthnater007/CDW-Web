@@ -28,24 +28,19 @@ public class EventController extends BaseController{
 	
 	@GetMapping(path="/List")
 	public @ResponseBody Iterable<Event> getAllEvents() {
-		//I figured out how to get this to work with my local-- had a bear of a time with timestamps, and java time functions in general
-		//This should work regaurdless of where it is put-- Cincinnati is 4 hours ahead of UTC time, and the db stores in utc, so hopefully this is it
 		Iterable<Event> events = eventRepository.findAll();
 		LocalDateTime now = new Timestamp(System.currentTimeMillis()).toLocalDateTime();
 		long oneDay = 86400000;
 		Timestamp tomorrow = new Timestamp(System.currentTimeMillis() + oneDay);
 		LocalDateTime tomorrowMidnight = tomorrow.toLocalDateTime().withHour(00).withMinute(00).withSecond(0).withNano(0);
-		System.out.println(tomorrowMidnight);
 		for (Event event : events) {
 			LocalDateTime start = event.getEventStart().toLocalDateTime().plusHours(4);
-			System.out.println("start = " + start);
 			if(event.getEventEnd() == null) {
 				if(start.isBefore(tomorrowMidnight)) {
 					eventRepository.deleteById(event.getId());
 				}
 			}else {
 				LocalDateTime end = event.getEventEnd().toLocalDateTime().plusHours(4);
-				System.out.println("end = " + end);
 				if(end.isBefore(now)){
 					eventRepository.deleteById(event.getId());
 				}
