@@ -1,5 +1,6 @@
 package com.cdw.web;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -36,8 +37,6 @@ public class PieceController extends BaseController{
 	public @ResponseBody Iterable<Piece> getAllWorkshops() {
 		return pieceRepository.findAllByPublication(false);
 	}
-	
-	
 	
 	@GetMapping(path="/Get")
 	public @ResponseBody List<Piece> getPiece(@RequestParam int id) {
