@@ -50,8 +50,7 @@ public class PieceController extends BaseController{
 	
 	@PostMapping(path="/FileUpload")
 	public @ResponseBody
-	String uploadFileHandler(@RequestParam("name") String name,
-			@RequestParam("file") MultipartFile file) {
+	String uploadFileHandler(@RequestParam("name") String name, @RequestParam("file") MultipartFile file) {
 
 		if (!file.isEmpty()) {
 			try {
