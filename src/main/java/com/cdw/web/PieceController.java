@@ -1,9 +1,13 @@
 package com.cdw.web;
 
+
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,7 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cdw.business.piece.Piece;
 import com.cdw.business.piece.PieceRepository;
@@ -44,8 +48,43 @@ public class PieceController extends BaseController{
 		return getReturnArray(u);
 	}
 	
+	@PostMapping(path="/FileUpload")
+	public @ResponseBody
+	String uploadFileHandler(@RequestParam("name") String name,
+			@RequestParam("file") MultipartFile file) {
+
+		if (!file.isEmpty()) {
+			try {
+				byte[] bytes = file.getBytes();
+
+				// Creating the directory to store file
+				String rootPath = System.getProperty("catalina.home");
+				File dir = new File(rootPath + File.separator + "tmpFiles");
+				if (!dir.exists())
+					dir.mkdirs();
+
+				// Create the file on server
+				File serverFile = new File(dir.getAbsolutePath()
+						+ File.separator + name);
+				BufferedOutputStream stream = new BufferedOutputStream(
+						new FileOutputStream(serverFile));
+				stream.write(bytes);
+				stream.close();
+
+
+				return "You successfully uploaded file=" + name;
+			} catch (Exception e) {
+				return "You failed to upload " + name + " => " + e.getMessage();
+			}
+		} else {
+			return "You failed to upload " + name
+					+ " because the file was empty.";
+		}
+	}
+	
 	@PostMapping(path="/Add") 
 	public @ResponseBody CDWMaintenanceReturn addNewPiece (@RequestBody Piece piece) {
+			
 		try {
 			Timestamp ts = new Timestamp(System.currentTimeMillis());
 			piece.setSubmitted(ts);

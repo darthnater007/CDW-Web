@@ -1,6 +1,5 @@
 package com.cdw.business.piece;
 
-import java.io.File;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -10,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 
 import com.cdw.business.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -24,8 +22,6 @@ public class Piece {
 	@ManyToOne //is this a many to one or one to many instance
 	@JoinColumn(name="UserId")
 	private User user;
-	@Transient
-	private File uploadFile;
 	private String title;
 	private String genre;
 	private String description;
@@ -39,10 +35,9 @@ public class Piece {
 		
 	}
 
-	public Piece(User user, File uploadFile, String title, String genre, String description, String fileName, Timestamp submitted, boolean publication) {
+	public Piece(User user, String title, String genre, String description, String fileName, Timestamp submitted, boolean publication) {
 		super();
 		this.user = user;
-		this.uploadFile = uploadFile;
 		this.title = title;
 		this.genre = genre;
 		this.description = description;
@@ -51,12 +46,11 @@ public class Piece {
 		this.publication = publication;
 	}
 
-	public Piece(int id, User user, File uploadFile, String title, String genre, String fileName, Timestamp submitted,
+	public Piece(int id, User user, String title, String genre, String fileName, Timestamp submitted,
 			boolean publication) {
 		super();
 		this.id = id;
 		this.user = user;
-		this.uploadFile = uploadFile;
 		this.title = title;
 		this.genre = genre;
 		this.fileName = fileName;
@@ -84,16 +78,6 @@ public class Piece {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-	
-	
-
-	public File getUploadFile() {
-		return uploadFile;
-	}
-
-	public void setUploadFile(File uploadFile) {
-		this.uploadFile = uploadFile;
 	}
 
 	public String getTitle() {
