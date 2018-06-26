@@ -50,15 +50,14 @@ public class PieceController extends BaseController{
 	
 	@PostMapping(path="/FileUpload")
 	public @ResponseBody
-	String uploadFileHandler(@RequestParam("name") String name, @RequestParam("file") MultipartFile file) {
-
+	String[] uploadFileHandler(@RequestParam String name, @RequestParam("file") MultipartFile file) {
+		String[] returnArr = new String[1];
 		if (!file.isEmpty()) {
 			try {
 				byte[] bytes = file.getBytes();
 
 				// Creating the directory to store file
-				String rootPath = System.getProperty("catalina.home");
-				File dir = new File(rootPath + File.separator + "tmpFiles");
+				File dir = new File("pieceUploads");
 				if (!dir.exists())
 					dir.mkdirs();
 
@@ -71,13 +70,15 @@ public class PieceController extends BaseController{
 				stream.close();
 
 
-				return "You successfully uploaded file=" + name;
+				returnArr[0] = "success";
+				return returnArr;
 			} catch (Exception e) {
-				return "You failed to upload " + name + " => " + e.getMessage();
+				returnArr[0] =  "failure";
+				return returnArr;
 			}
 		} else {
-			return "You failed to upload " + name
-					+ " because the file was empty.";
+			returnArr[0] = "empty";
+			return returnArr;
 		}
 	}
 	
