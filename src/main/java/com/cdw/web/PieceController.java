@@ -1,8 +1,10 @@
 package com.cdw.web;
 
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.sql.Timestamp;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.Optional;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,10 +45,18 @@ public class PieceController extends BaseController{
 		return pieceRepository.findAllByPublication(false);
 	}
 	
-	@GetMapping(path="/Get")
+	@GetMapping(path="/Get") //this will be GetFile eventually, and should return a file to the front end, where it will be opened in a new window
 	public @ResponseBody List<Piece> getPiece(@RequestParam int id) {
 		Optional<Piece> u = pieceRepository.findById(id);
 		return getReturnArray(u);
+	}
+	
+	@GetMapping(path = "/ViewPiece", produces = "application/pdf")
+	public @ResponseBody FileSystemResource sendFile(@RequestParam String fileName) {
+		String path = "pieceUploads/" + fileName;
+		
+		
+		return new FileSystemResource(path);
 	}
 	
 	@PostMapping(path="/FileUpload")
@@ -104,7 +115,15 @@ public class PieceController extends BaseController{
 	public @ResponseBody CDWMaintenanceReturn deletePiece (@RequestParam int id) {
 		
 		Optional<Piece> piece = pieceRepository.findById(id);
+		String path = "pieceUploads/" + piece.get().getFileName();
 		try {
+			File file = new File(path);
+        	
+    		if(file.delete()){
+    			System.out.println(file.getName() + " is deleted!");
+    		}else{
+    			System.out.println("Delete operation is failed.");
+    		}
 			pieceRepository.delete(piece.get());
 			return CDWMaintenanceReturn.getMaintReturn(piece.get());
 		}
