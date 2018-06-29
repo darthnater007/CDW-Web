@@ -1,12 +1,11 @@
 package com.cdw.web;
 
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +44,7 @@ public class PieceController extends BaseController{
 		return pieceRepository.findAllByPublication(false);
 	}
 	
-	@GetMapping(path="/Get") //this will be GetFile eventually, and should return a file to the front end, where it will be opened in a new window
+	@GetMapping(path="/Get")
 	public @ResponseBody List<Piece> getPiece(@RequestParam int id) {
 		Optional<Piece> u = pieceRepository.findById(id);
 		return getReturnArray(u);
@@ -54,7 +53,6 @@ public class PieceController extends BaseController{
 	@GetMapping(path = "/ViewPiece", produces = "application/pdf")
 	public @ResponseBody FileSystemResource sendFile(@RequestParam String fileName) {
 		String path = "pieceUploads/" + fileName;
-		
 		
 		return new FileSystemResource(path);
 	}
@@ -95,9 +93,10 @@ public class PieceController extends BaseController{
 	
 	@PostMapping(path="/Add") 
 	public @ResponseBody CDWMaintenanceReturn addNewPiece (@RequestBody Piece piece) {
-			
 		try {
-			Timestamp ts = new Timestamp(System.currentTimeMillis());
+			System.out.println();
+			LocalDateTime now = LocalDateTime.now();
+			Timestamp ts = Timestamp.valueOf(now.minusHours(4));
 			piece.setSubmitted(ts);
 			pieceRepository.save(piece);
 			return CDWMaintenanceReturn.getMaintReturn(piece);
@@ -122,7 +121,7 @@ public class PieceController extends BaseController{
     		if(file.delete()){
     			System.out.println(file.getName() + " is deleted!");
     		}else{
-    			System.out.println("Delete operation is failed.");
+    			System.out.println("Delete operation failed.");
     		}
 			pieceRepository.delete(piece.get());
 			return CDWMaintenanceReturn.getMaintReturn(piece.get());
@@ -135,8 +134,31 @@ public class PieceController extends BaseController{
 		}
 		
 	}
+	
+	@GetMapping(path="/RemoveFile")
+	public @ResponseBody String[] deleteFile (@RequestParam String fileName) {
+		String[] returnArr = new String[1];
+		String path = "pieceUploads/" + fileName;
+		try {
+			File file = new File(path);
+        	
+    		if(file.delete()){
+    			returnArr[0] = "success";
+    			return returnArr;
+    		}else{
+    			System.out.println("Delete operation failed.");
+    			returnArr[0] = "failure";
+    			return returnArr;
+    		}
+		}
+		catch (Exception e) {
+			returnArr[0] = "failure";
+			return returnArr;
+		}
+		
+	}
 
-	@PostMapping(path="/Change") 
+	@PostMapping(path="/Change") // add logic-- if(file has been changed){ delete old file and create new} -- maybe do this from front end
 	public @ResponseBody CDWMaintenanceReturn updatePiece (@RequestBody Piece piece) {
 		try {
 			pieceRepository.save(piece);
