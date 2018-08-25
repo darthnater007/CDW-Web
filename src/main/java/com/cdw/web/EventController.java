@@ -49,6 +49,12 @@ public class EventController extends BaseController{
 		return eventRepository.findAll();
 	}
 	
+	@GetMapping(path="/Get")
+	public @ResponseBody List<Event> getEvent(@RequestParam int id) {
+		Optional<Event> u = eventRepository.findById(id);
+		return getReturnArray(u);
+	}
+	
 	@PostMapping(path="/Add") 
 	public @ResponseBody CDWMaintenanceReturn addNewEvent (@RequestBody Event event) {
 		try {

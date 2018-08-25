@@ -36,6 +36,12 @@ public class UserController extends BaseController{
 		return userRepository.findByAdmin(true);
 	}
 	
+	@GetMapping(path="/Get")
+	public @ResponseBody List<User> getUser(@RequestParam int id) {
+		Optional<User> u = userRepository.findById(id);
+		return getReturnArray(u);
+	}
+	
 	@PostMapping(path="/Add") 
 	public @ResponseBody CDWMaintenanceReturn addNewUser (@RequestBody User user) {
 		try {

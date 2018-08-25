@@ -44,6 +44,12 @@ public class PieceController extends BaseController{
 		return pieceRepository.findAllByPublication(false);
 	}
 	
+	@GetMapping(path="/Get")
+	public @ResponseBody List<Piece> getPiece(@RequestParam int id) {
+		Optional<Piece> u = pieceRepository.findById(id);
+		return getReturnArray(u);
+	}
+	
 	@GetMapping(path = "/ViewPiece", produces = "application/pdf")
 	public @ResponseBody FileSystemResource sendFile(@RequestParam String fileName) {
 		String path = "pieceUploads/" + fileName;
