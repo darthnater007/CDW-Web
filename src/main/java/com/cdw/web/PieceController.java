@@ -44,12 +44,6 @@ public class PieceController extends BaseController{
 		return pieceRepository.findAllByPublication(false);
 	}
 	
-	@GetMapping(path="/Get")
-	public @ResponseBody List<Piece> getPiece(@RequestParam int id) {
-		Optional<Piece> u = pieceRepository.findById(id);
-		return getReturnArray(u);
-	}
-	
 	@GetMapping(path = "/ViewPiece", produces = "application/pdf")
 	public @ResponseBody FileSystemResource sendFile(@RequestParam String fileName) {
 		String path = "pieceUploads/" + fileName;
@@ -158,7 +152,7 @@ public class PieceController extends BaseController{
 		
 	}
 
-	@PostMapping(path="/Change") // add logic-- if(file has been changed){ delete old file and create new} -- maybe do this from front end
+	@PostMapping(path="/Change") 
 	public @ResponseBody CDWMaintenanceReturn updatePiece (@RequestBody Piece piece) {
 		try {
 			pieceRepository.save(piece);

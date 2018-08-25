@@ -31,10 +31,9 @@ public class UserController extends BaseController{
 		return userRepository.findAll();
 	}
 	
-	@GetMapping(path="/Get")
-	public @ResponseBody List<User> getUser(@RequestParam int id) {
-		Optional<User> u = userRepository.findById(id);
-		return getReturnArray(u);
+	@GetMapping(path="/ListAdmin")
+	public @ResponseBody Iterable<User> getAllAdmins() {
+		return userRepository.findByAdmin(true);
 	}
 	
 	@PostMapping(path="/Add") 
