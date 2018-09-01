@@ -1,0 +1,20 @@
+amazonProperties:
+  accessKey: AKIAILESLQVBXF44I5YA
+  bucketName: com.cdiywriters
+  endpointUrl: https://s3.us-east-2.amazonaws.com
+  secretKey: SlRheCSMmHiy5VmY3yQM42ppptVvY6NJMt6+MBI7
+spring:
+  datasource:
+    password: 50ea111a
+    url: jdbc:mysql://us-cdbr-iron-east-01.cleardb.net/heroku_87771601bbc0209?reconnect=true?useSSL=false
+    username: bcd48bfe2102c4
+  jackson:
+    property-naming-strategy: UPPER_CAMEL_CASE
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  servlet:
+    multipart:
+      enabled: true

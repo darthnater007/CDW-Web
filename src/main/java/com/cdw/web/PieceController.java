@@ -1,9 +1,7 @@
 package com.cdw.web;
 
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,18 +9,20 @@ import java.util.Optional;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cdw.business.piece.AmazonClient;
 import com.cdw.business.piece.Piece;
 import com.cdw.business.piece.PieceRepository;
 import com.cdw.util.CDWMaintenanceReturn;
@@ -31,8 +31,16 @@ import com.cdw.util.CDWMaintenanceReturn;
 @Controller    
 @RequestMapping(path="/Pieces")
 public class PieceController extends BaseController{
+
+	private AmazonClient amazonClient;
+	
 	@Autowired 
 	private PieceRepository pieceRepository;
+	
+	@Autowired
+	 PieceController(AmazonClient amazonClient) {
+	        this.amazonClient = amazonClient;
+	    }
 
 	@GetMapping(path="/Publications")
 	public @ResponseBody Iterable<Piece> getAllPublications() {
@@ -50,46 +58,24 @@ public class PieceController extends BaseController{
 		return getReturnArray(u);
 	}
 	
-	@GetMapping(path = "/ViewPiece", produces = "application/pdf")
-	public @ResponseBody FileSystemResource sendFile(@RequestParam String fileName) {
-		String path = "pieceUploads/" + fileName;
+	@PostMapping(path = "/ViewPiece")
+	public @ResponseBody String sendFile(@RequestParam String fileName) {
+		fileName = fileName.replace(' ', '+');
+		System.out.println(fileName);
+		String url = "https://s3.us-east-2.amazonaws.com/com.cdiywriters/" + fileName;
 		
-		return new FileSystemResource(path);
+		return url;
 	}
-	
-	@PostMapping(path="/FileUpload")
-	public @ResponseBody
-	String[] uploadFileHandler(@RequestParam String name, @RequestParam("file") MultipartFile file) {
-		String[] returnArr = new String[1];
-		if (!file.isEmpty()) {
-			try {
-				byte[] bytes = file.getBytes();
-
-				// Creating the directory to store file
-				File dir = new File("pieceUploads");
-				if (!dir.exists())
-					dir.mkdirs();
-
-				// Create the file on server
-				File serverFile = new File(dir.getAbsolutePath()
-						+ File.separator + name);
-				BufferedOutputStream stream = new BufferedOutputStream(
-						new FileOutputStream(serverFile));
-				stream.write(bytes);
-				stream.close();
-
-
-				returnArr[0] = "success";
-				return returnArr;
-			} catch (Exception e) {
-				returnArr[0] =  "failure";
-				return returnArr;
-			}
-		} else {
-			returnArr[0] = "empty";
-			return returnArr;
-		}
-	}
+	//for S3 Bucket
+    @PostMapping("/FileUpload")
+    public String uploadFile(@RequestPart(value = "file") MultipartFile file) {
+        return this.amazonClient.uploadFile(file);
+    }
+    
+    @DeleteMapping("/RemoveFile")
+    public String deleteFile(@RequestPart(value = "fileName") String fileName) {
+        return this.amazonClient.deleteFileFromS3Bucket(fileName);
+    }
 	
 	@PostMapping(path="/Add") 
 	public @ResponseBody CDWMaintenanceReturn addNewPiece (@RequestBody Piece piece) {
@@ -131,29 +117,6 @@ public class PieceController extends BaseController{
 		}
 		catch (Exception e) {
 			return CDWMaintenanceReturn.getMaintReturnError(piece, e.toString());
-		}
-		
-	}
-	
-	@GetMapping(path="/RemoveFile")
-	public @ResponseBody String[] deleteFile (@RequestParam String fileName) {
-		String[] returnArr = new String[1];
-		String path = "pieceUploads/" + fileName;
-		try {
-			File file = new File(path);
-        	
-    		if(file.delete()){
-    			returnArr[0] = "success";
-    			return returnArr;
-    		}else{
-    			System.out.println("Delete operation failed.");
-    			returnArr[0] = "failure";
-    			return returnArr;
-    		}
-		}
-		catch (Exception e) {
-			returnArr[0] = "failure";
-			return returnArr;
 		}
 		
 	}
