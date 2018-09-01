@@ -24,8 +24,10 @@ import com.cdw.business.piece.AmazonClient;
 	    }
 
 	    @PostMapping("/FileUpload")
-	    public String uploadFile(@RequestPart(value = "file") MultipartFile file) {
-	        return this.amazonClient.uploadFile(file);
+	    public String[] uploadFile(@RequestPart(value = "file") MultipartFile file) {
+	    	String[] rtrnArr = new String[1];
+	        rtrnArr[0] = this.amazonClient.uploadFile(file);
+	        return rtrnArr;
 	    }
 
 	    @DeleteMapping("/RemoveFile")
