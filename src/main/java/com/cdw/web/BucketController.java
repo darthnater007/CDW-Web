@@ -31,7 +31,9 @@ import com.cdw.business.piece.AmazonClient;
 	    }
 
 	    @DeleteMapping("/RemoveFile")
-	    public String deleteFile(@RequestPart(value = "fileName") String fileName) {
-	        return this.amazonClient.deleteFileFromS3Bucket(fileName);
+	    public String[] deleteFile(@RequestPart(value = "fileName") String fileName) {
+	    	String[] rtrnArr = new String[1];
+	        rtrnArr[0] = this.amazonClient.deleteFileFromS3Bucket(fileName);
+	        return rtrnArr;
 	    }
 	}
