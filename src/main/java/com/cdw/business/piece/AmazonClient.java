@@ -44,6 +44,10 @@ public class AmazonClient {
         return convFile;
     }
     
+    private String generateFileName(MultipartFile multiPart) {
+        return multiPart.getOriginalFilename().replace(" ", "_");
+    }
+    
     private void uploadFileTos3bucket(String fileName, File file) {
         s3client.putObject(new PutObjectRequest(bucketName, fileName, file)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
@@ -54,7 +58,7 @@ public class AmazonClient {
         String fileUrl = "";
         try {
             File file = convertMultiPartToFile(multipartFile);
-            String fileName = file.getName();
+            String fileName = generateFileName(multipartFile);
             fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
             uploadFileTos3bucket(fileName, file);
             file.delete();

@@ -60,8 +60,6 @@ public class PieceController extends BaseController{
 	
 	@PostMapping(path = "/ViewPiece")
 	public @ResponseBody String sendFile(@RequestParam String fileName) {
-		fileName = fileName.replace(' ', '+');
-		System.out.println(fileName);
 		String url = "https://s3.us-east-2.amazonaws.com/com.cdiywriters/" + fileName;
 		
 		return url;
